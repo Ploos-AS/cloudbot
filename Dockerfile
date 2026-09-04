@@ -18,7 +18,7 @@ RUN apt-get update \
 RUN git clone https://github.com/TotallyNotRobots/CloudBot.git /usr/src/cloudbot \
     && cd /usr/src/cloudbot \
     && git checkout --detach "${CLOUDBOT_COMMIT}" \
-    && test "$(git rev-parse HEAD)" = "${CLOUDBOT_COMMIT"
+    && test "$(git rev-parse HEAD)" = "${CLOUDBOT_COMMIT}"
 
 RUN python -m venv "$VIRTUAL_ENV" \
     && "$VIRTUAL_ENV/bin/python" -m pip install --upgrade pip wheel \
