@@ -11,7 +11,15 @@ prepare_runtime() {
   mkdir -p /data/data /data/logs
 
   if [ ! -e /data/plugins ]; then
-    ln -s /usr/src/cloudbot/plugins /data/plugins
+    mkdir -p /data/plugins
+    cp -a /usr/src/cloudbot/plugins/. /data/plugins/
+  elif [ -L /data/plugins ]; then
+    target="$(readlink /data/plugins || true)"
+    if [ "$target" = "/usr/src/cloudbot/plugins" ]; then
+      rm /data/plugins
+      mkdir -p /data/plugins
+      cp -a /usr/src/cloudbot/plugins/. /data/plugins/
+    fi
   fi
 
   if [ "$config" != "/data/config.json" ]; then
