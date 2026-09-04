@@ -10,7 +10,7 @@ cleanup() {
   trap - EXIT INT TERM
   echo "smoke cleanup: status=$status"
   docker rm -f "$name" >/dev/null 2>&1 || true
-  docker run --rm --user 0:0 -v "$tmp:/cleanup" --entrypoint /bin/sh "$image" -c 'rm -rf /cleanup/* /cleanup/.[!.]* /cleanup/..?* 2>/dev/null || true' >/dev/null 2>&1 || true
+  docker run --rm --user 0:0 -v "$tmp:/cleanup" --entrypoint /bin/sh "$image" -c 'find /cleanup -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +' >/dev/null 2>&1 || true
   rm -rf "$tmp" || true
   exit "$status"
 }
