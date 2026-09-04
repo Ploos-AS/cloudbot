@@ -12,7 +12,7 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     VIRTUAL_ENV=/opt/cloudbot/venv
 
 RUN apt-get update \
-    && apt-get install --yes --no-install-recommends ca-certificates git \
+    && apt-get install --yes --no-install-recommends ca-certificates git build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 RUN git clone https://github.com/TotallyNotRobots/CloudBot.git /usr/src/cloudbot \
