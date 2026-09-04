@@ -7,6 +7,22 @@ case "$config" in
   *) config="/data/$config" ;;
 esac
 
+prepare_runtime() {
+  mkdir -p /data/data /data/logs
+
+  if [ ! -e /data/plugins ]; then
+    ln -s /usr/src/cloudbot/plugins /data/plugins
+  fi
+
+  if [ "$config" != "/data/config.json" ]; then
+    if [ -e /data/config.json ] && [ ! -L /data/config.json ]; then
+      echo "Cannot activate $config because /data/config.json already exists as a regular file." >&2
+      exit 64
+    fi
+    ln -sfn "$config" /data/config.json
+  fi
+}
+
 case "${1:-run}" in
   run)
     shift || true
@@ -24,8 +40,9 @@ The container will remain idle until a config exists.
 EOF
       exec sleep infinity
     fi
+    prepare_runtime
     cd /data
-    exec python -m cloudbot --config "$config" "$@"
+    exec python -m cloudbot "$@"
     ;;
   init)
     shift || true
