@@ -1,0 +1,17 @@
+[Unit]
+Description=CloudBot IRC bot
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=ghcr.io/ploos-as/cloudbot:0.1.0
+ContainerName=cloudbot
+Volume=%h/.local/share/cloudbot:/data:Z
+Environment=CLOUDBOT_CONFIG=/data/config.json
+
+[Service]
+Restart=always
+TimeoutStopSec=30
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,7 @@
+CloudBot container packaging by Ploos AS.
+
+Upstream: https://github.com/TotallyNotRobots/CloudBot
+Pinned release: 1.4.0
+Pinned commit: d891d49254d5c95ddd997c0d44e03a502966ba34
+CloudBot is GPL-3.0-or-later. Upstream source is retained in the image at /usr/src/cloudbot.
+Ploos AS is not affiliated with or endorsed by the upstream maintainers.

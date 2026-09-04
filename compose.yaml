@@ -1,0 +1,9 @@
+services:
+  cloudbot:
+    image: ghcr.io/ploos-as/cloudbot:0.1.0
+    container_name: cloudbot
+    restart: unless-stopped
+    environment:
+      CLOUDBOT_CONFIG: /data/config.json
+    volumes:
+      - ./data:/data

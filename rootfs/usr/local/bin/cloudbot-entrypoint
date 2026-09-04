@@ -1,0 +1,47 @@
+#!/bin/sh
+set -eu
+
+config="${CLOUDBOT_CONFIG:-/data/config.json}"
+case "$config" in
+  /*) ;;
+  *) config="/data/$config" ;;
+esac
+
+case "${1:-run}" in
+  run)
+    shift || true
+    if [ ! -f "$config" ]; then
+      cat >&2 <<EOF
+CloudBot is not configured yet.
+
+Create a starter config:
+  docker run --rm -v "$PWD/data:/data" ghcr.io/ploos-as/cloudbot:edge init
+
+Then edit:
+  $config
+
+The container will remain idle until a config exists.
+EOF
+      exec sleep infinity
+    fi
+    cd /data
+    exec python -m cloudbot --config "$config" "$@"
+    ;;
+  init)
+    shift || true
+    if [ -e "$config" ]; then
+      echo "Refusing to overwrite existing config: $config" >&2
+      exit 64
+    fi
+    mkdir -p "$(dirname "$config")"
+    cp /usr/src/cloudbot/config.default.json "$config"
+    echo "Created $config"
+    ;;
+  shell)
+    shift || true
+    exec /bin/sh "$@"
+    ;;
+  *)
+    exec "$@"
+    ;;
+esac
