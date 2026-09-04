@@ -32,15 +32,17 @@ chmod 0777 "$tmp"
 echo "smoke: checking runtime UID/GID"
 uid="$(docker run --rm --entrypoint id "$image" -u)"
 gid="$(docker run --rm --entrypoint id "$image" -g)"
+echo "smoke: uid=$uid gid=$gid"
 [ "$uid" = "1000" ] || fail "expected UID 1000, got $uid"
 [ "$gid" = "1000" ] || fail "expected GID 1000, got $gid"
 
 echo "smoke: checking CloudBot import from default working directory"
-docker run --rm --entrypoint python "$image" -c 'import cloudbot; print(cloudbot.__file__)' || fail "CloudBot import failed"
+docker run --rm --entrypoint python "$image" -c 'import cloudbot; print("cloudbot module:", cloudbot.__file__)' || fail "CloudBot import failed"
 
 echo "smoke: creating starter configuration"
 docker run --rm -v "$tmp:/data" "$image" init || fail "init command failed"
 [ -s "$tmp/config.json" ] || fail "init did not create non-empty config.json"
+ls -la "$tmp" || true
 
 echo "smoke: starting configured container"
 docker run -d --name "$name" -v "$tmp:/data" "$image" >/dev/null || fail "docker run failed"
@@ -50,6 +52,12 @@ running="$(docker inspect -f '{{.State.Running}}' "$name" 2>/dev/null || true)"
 exit_code="$(docker inspect -f '{{.State.ExitCode}}' "$name" 2>/dev/null || true)"
 health="$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' "$name" 2>/dev/null || true)"
 echo "smoke: running=$running exit_code=$exit_code health=$health"
+
+echo "--- container logs after startup ---"
+docker logs "$name" 2>&1 || true
+
+echo "--- data tree after startup ---"
+docker run --rm --user 0:0 -v "$tmp:/data" --entrypoint /bin/sh "$image" -c 'find /data -maxdepth 3 -printf "%M %u:%g %p\n" 2>/dev/null | sort' || true
 
 [ "$running" = "true" ] || fail "container exited (exit_code=$exit_code)"
 
