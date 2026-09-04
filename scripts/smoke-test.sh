@@ -3,7 +3,15 @@ set -eu
 image="${1:-cloudbot:test}"
 name="cloudbot-smoke-$$"
 tmp="$(mktemp -d)"
-trap 'docker rm -f "$name" >/dev/null 2>&1 || true; rm -rf "$tmp"' EXIT INT TERM
+
+cleanup() {
+  docker rm -f "$name" >/dev/null 2>&1 || true
+  if [ -d "$tmp" ]; then
+    docker run --rm --entrypoint sh -v "$tmp:/cleanup" "$image" -c 'rm -rf /cleanup/* /cleanup/.[!.]* /cleanup/..?* 2>/dev/null || true' >/dev/null 2>&1 || true
+    rm -rf "$tmp"
+  fi
+}
+trap cleanup EXIT INT TERM
 
 chmod 0777 "$tmp"
 
