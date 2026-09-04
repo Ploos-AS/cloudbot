@@ -1,3 +1,25 @@
-GNU General Public License version 3 or later.
+CloudBot container packaging
+============================
 
-See https://www.gnu.org/licenses/gpl-3.0.txt for the complete license text.
+This repository packages CloudBot, which is licensed under the GNU General
+Public License, version 3 or (at your option) any later version
+(GPL-3.0-or-later).
+
+The complete upstream CloudBot source corresponding to the pinned release is
+retained in every image at:
+
+    /usr/src/cloudbot
+
+That source tree includes the upstream GPL license text. The pinned source for
+this release is:
+
+    https://github.com/TotallyNotRobots/CloudBot
+    release: v1.4.0
+    commit: d891d49254d5c95ddd997c0d44e03a502966ba34
+
+A canonical copy of GNU GPL version 3 is also available from the Free Software
+Foundation at:
+
+    https://www.gnu.org/licenses/gpl-3.0.txt
+
+See NOTICE for attribution and packaging details.
