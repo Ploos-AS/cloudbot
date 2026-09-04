@@ -56,6 +56,7 @@ COPY rootfs/usr/local/bin/cloudbot-healthcheck /usr/local/bin/cloudbot-healthche
 RUN chmod 0755 /usr/local/bin/cloudbot-entrypoint /usr/local/bin/cloudbot-healthcheck
 
 ENV PATH="/opt/cloudbot/venv/bin:${PATH}" \
+    PYTHONPATH=/usr/src/cloudbot \
     HOME=/data \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
